@@ -7,7 +7,7 @@ import styles from './Discovery.module.css';
 
 const Discovery = () => {
   const { user } = useContext(AuthContext);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const query = searchParams.get('q') || '';
   
   const [activeTab, setActiveTab] = useState('projects'); // projects, users

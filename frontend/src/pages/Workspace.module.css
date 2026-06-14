@@ -11,7 +11,7 @@
   gap: 0.5rem;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   padding: 1rem;
 }
 
@@ -52,6 +52,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-height: 420px;
 }
 
 .contentHeader {
@@ -79,6 +80,13 @@
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
+  transition: border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.noteItem:hover,
+.fileItem:hover {
+  border-color: rgba(99, 102, 241, 0.35);
+  transform: translateY(-1px);
 }
 
 .noteItem h3 {
@@ -116,6 +124,15 @@
   padding: 1rem 1.5rem;
   border-bottom: 1px solid var(--border-color);
   background: var(--bg-secondary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.chatHeader span {
+  color: var(--text-muted);
+  font-size: 0.875rem;
 }
 
 .chatBody {
@@ -125,7 +142,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  background: var(--bg-primary);
+  background: rgba(10, 15, 26, 0.72);
 }
 
 .message {
@@ -149,11 +166,22 @@
   text-align: right;
 }
 
+.msgTime {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  margin-top: 0.25rem;
+}
+
+.myMessage .msgTime {
+  text-align: right;
+}
+
 .msgContent {
   background: var(--bg-tertiary);
   padding: 0.75rem 1rem;
   border-radius: var(--radius-md);
   border-top-left-radius: 0;
+  overflow-wrap: anywhere;
 }
 
 .myMessage .msgContent {
@@ -169,4 +197,30 @@
   padding: 1rem;
   background: var(--bg-secondary);
   border-top: 1px solid var(--border-color);
+}
+
+@media (max-width: 800px) {
+  .workspaceContainer {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .tabBtn {
+    white-space: nowrap;
+  }
+}
+
+.chatError {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #fecaca;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
 }

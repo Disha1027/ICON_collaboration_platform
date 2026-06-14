@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FiUsers, FiLock, FiGlobe, FiFolder, FiSettings, FiX } from 'react-icons/fi';
@@ -20,8 +20,11 @@ const ProjectPage = () => {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [requestSent, setRequestSent] = useState(false);
 
-  const fetchProject = async () => {
+  const fetchProject = useCallback(async () => {
+    if (!user || !id) return;
+
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
       const { data } = await axios.get(`http://localhost:5000/api/projects/${id}`, config);
@@ -40,11 +43,11 @@ const ProjectPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, navigate, user]);
 
   useEffect(() => {
-    if (user && id) fetchProject();
-  }, [id, user, navigate]);
+    fetchProject();
+  }, [fetchProject]);
 
   const handleSettingsChange = (e) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -72,9 +75,12 @@ const ProjectPage = () => {
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
       await axios.post('http://localhost:5000/api/requests/join', { projectId: id }, config);
+      setRequestSent(true);
       alert('Join request sent!');
     } catch (error) {
-      alert(error.response?.data?.message || 'Failed to send request');
+      const message = error.response?.data?.message || 'Failed to send request';
+      if (message === 'Request already sent') setRequestSent(true);
+      alert(message);
     }
   };
 
@@ -200,7 +206,9 @@ const ProjectPage = () => {
               <FiFolder /> Enter Workspace
             </Link>
           ) : (
-            <button className="btn btn-primary" onClick={handleRequestToJoin}>Request to Join</button>
+            <button className="btn btn-primary" onClick={handleRequestToJoin} disabled={requestSent}>
+              {requestSent ? 'Request Sent' : 'Request to Join'}
+            </button>
           )}
           {isAdmin && (
             <button className="btn btn-secondary" onClick={() => setShowSettings(true)}>

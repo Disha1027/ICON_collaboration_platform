@@ -2,7 +2,11 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(249, 115, 22, 0.06));
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
 }
 
 .title {
@@ -57,6 +61,19 @@
   padding-bottom: 0.5rem;
 }
 
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 3rem;
+}
+
+.sectionHeader .sectionTitle {
+  margin-bottom: 1.5rem;
+  flex: 1;
+}
+
 .projectGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -66,6 +83,7 @@
 .projectCard {
   display: flex;
   flex-direction: column;
+  min-height: 240px;
 }
 
 .projectHeader {
@@ -82,8 +100,8 @@
 .badge {
   font-size: 0.75rem;
   padding: 0.25rem 0.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-full);
+  background: rgba(99, 102, 241, 0.14);
+  border-radius: var(--radius-sm);
   color: var(--text-secondary);
 }
 
@@ -138,8 +156,20 @@
   padding: 4rem 2rem;
   background: var(--bg-secondary);
   border: 1px dashed var(--border-color);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   text-align: center;
+}
+
+@media (max-width: 720px) {
+  .header,
+  .sectionHeader {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .projectGrid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .emptyIcon {

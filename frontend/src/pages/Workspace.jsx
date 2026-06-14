@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useRef } from 'react';
+import { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { io } from 'socket.io-client';
@@ -15,6 +15,7 @@ const Workspace = () => {
   // Chat state
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const [chatError, setChatError] = useState('');
   const socketRef = useRef();
   const messagesEndRef = useRef(null);
 
@@ -27,7 +28,9 @@ const Workspace = () => {
   const fileInputRef = useRef(null);
   const [uploading, setUploading] = useState(false);
 
-  const fetchWorkspace = async () => {
+  const fetchWorkspace = useCallback(async () => {
+    if (!user || !id) return;
+
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
       const { data } = await axios.get(`http://localhost:5000/api/projects/${id}/workspace`, config);
@@ -35,20 +38,42 @@ const Workspace = () => {
     } catch (error) {
       console.error('Error fetching workspace', error);
     }
-  };
+  }, [id, user]);
 
   useEffect(() => {
-    if (user && id) fetchWorkspace();
+    fetchWorkspace();
+  }, [fetchWorkspace]);
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      if (!user || !id) return;
+
+      try {
+        const config = { headers: { Authorization: `Bearer ${user.token}` } };
+        const { data } = await axios.get(`http://localhost:5000/api/projects/${id}/messages`, config);
+        setMessages(data);
+      } catch (error) {
+        console.error('Error fetching chat history', error);
+      }
+    };
+
+    fetchMessages();
   }, [id, user]);
 
   useEffect(() => {
     if (!id || !user) return;
     
-    socketRef.current = io('http://localhost:5000');
+    socketRef.current = io('http://localhost:5000', {
+      auth: { token: user.token }
+    });
     socketRef.current.emit('join_project', id);
 
     socketRef.current.on('receive_message', (message) => {
       setMessages((prev) => [...prev, message]);
+    });
+
+    socketRef.current.on('chat_error', (error) => {
+      setChatError(error.message || 'Chat connection issue');
     });
 
     return () => {
@@ -64,14 +89,10 @@ const Workspace = () => {
     e.preventDefault();
     if (!newMessage.trim()) return;
 
-    const messageData = {
+    socketRef.current.emit('send_message', {
       projectId: id,
-      sender: user.username,
-      content: newMessage,
-      timestamp: new Date().toISOString()
-    };
-
-    socketRef.current.emit('send_message', messageData);
+      content: newMessage
+    });
     setNewMessage('');
   };
 
@@ -209,12 +230,20 @@ const Workspace = () => {
           <div className={`${styles.contentCard} card`} style={{ display: 'flex', flexDirection: 'column', padding: 0 }}>
             <div className={styles.chatHeader}>
               <h2>Project Chat</h2>
+              <span>{messages.length} saved messages</span>
             </div>
             <div className={styles.chatBody}>
+              {chatError && <div className={styles.chatError}>{chatError}</div>}
+              {messages.length === 0 && (
+                <p className={styles.emptyText}>No messages yet. Start the discussion.</p>
+              )}
               {messages.map((msg, index) => (
-                <div key={index} className={`${styles.message} ${msg.sender === user.username ? styles.myMessage : ''}`}>
-                  <span className={styles.msgSender}>{msg.sender}</span>
+                <div key={msg._id || index} className={`${styles.message} ${msg.sender?._id === user._id ? styles.myMessage : ''}`}>
+                  <span className={styles.msgSender}>{msg.sender?.name || msg.sender?.username || 'Unknown'}</span>
                   <div className={styles.msgContent}>{msg.content}</div>
+                  <span className={styles.msgTime}>
+                    {msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                  </span>
                 </div>
               ))}
               <div ref={messagesEndRef} />

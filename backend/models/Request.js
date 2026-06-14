@@ -16,7 +16,7 @@ const RequestSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['Invite', 'Collab'],
+    enum: ['Invite', 'Join', 'Collab'],
     required: true
   },
   status: {

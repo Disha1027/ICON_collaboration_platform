@@ -53,8 +53,8 @@
 body {
   font-family: var(--font-family);
   background: var(--bg-primary);
-  background-image: radial-gradient(circle at top right, rgba(99, 102, 241, 0.05), transparent 40%),
-                    radial-gradient(circle at bottom left, rgba(124, 58, 237, 0.05), transparent 40%);
+  background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.95), #0a0f1a 42%),
+                    radial-gradient(circle at top right, rgba(249, 115, 22, 0.08), transparent 32%);
   color: var(--text-primary);
   min-height: 100vh;
   line-height: 1.6;
@@ -104,15 +104,15 @@ input, textarea, select {
 .card {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   padding: 1.5rem;
   box-shadow: var(--shadow-md);
   transition: transform var(--transition-normal), box-shadow var(--transition-normal);
 }
 
 .card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
 }
 
 .btn {
@@ -125,6 +125,13 @@ input, textarea, select {
   border: none;
   transition: all var(--transition-fast);
   gap: 0.5rem;
+  min-height: 38px;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .btn-primary {

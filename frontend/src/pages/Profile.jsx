@@ -5,7 +5,7 @@ import AuthContext from '../context/AuthContext';
 import styles from './Profile.module.css';
 
 const Profile = () => {
-  const { user, login } = useContext(AuthContext); // Need a way to update context, or just refresh page. 
+  const { user } = useContext(AuthContext); // Need a way to update context, or just refresh page. 
   // Let's add an updateUser function or just reload the context. For now, since user state isn't exported as setter,
   // we'll just update local state and let the user refresh, or actually we can update the localStorage.
   

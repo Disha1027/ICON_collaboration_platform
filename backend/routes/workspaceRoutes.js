@@ -6,7 +6,7 @@ const { checkRole } = require('../middleware/rbac');
 
 // Route path relative to /api/projects/:projectId/workspace
 router.route('/')
-  .get(protect, getWorkspaceByProjectId);
+  .get(protect, checkRole(['Admin', 'Lead', 'Editor', 'Member', 'Viewer']), getWorkspaceByProjectId);
 
 router.route('/notes')
   .post(protect, checkRole(['Admin', 'Lead', 'Editor', 'Member']), addNote)

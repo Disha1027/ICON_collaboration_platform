@@ -5,7 +5,7 @@
 }
 
 .headerCard {
-  background: linear-gradient(to right, rgba(99, 102, 241, 0.05), transparent);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(249, 115, 22, 0.05));
   border-left: 4px solid var(--primary-color);
 }
 
@@ -34,7 +34,7 @@
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   background: var(--bg-tertiary);
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-md);
   font-size: 0.875rem;
   color: var(--text-secondary);
 }
@@ -56,7 +56,7 @@
 .tag {
   background: var(--bg-tertiary);
   padding: 0.25rem 0.75rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-md);
   font-size: 0.875rem;
   color: var(--text-primary);
   border: 1px solid var(--border-color);
@@ -130,6 +130,11 @@
 }
 
 @media (max-width: 768px) {
+  .headerTop,
+  .actions {
+    flex-direction: column;
+  }
+
   .contentGrid {
     grid-template-columns: 1fr;
   }

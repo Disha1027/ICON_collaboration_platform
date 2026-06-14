@@ -113,11 +113,27 @@ const respondToRequest = async (req, res) => {
       }
 
       request.status = 'Accepted';
+
+      await Notification.create({
+        user: newUserId,
+        content: `Your request for ${project.name} was accepted`,
+        type: 'Update',
+        relatedId: project._id
+      });
     } else {
       request.status = 'Rejected';
+
+      const project = await Project.findById(request.receiverProject);
+      await Notification.create({
+        user: request.type === 'Invite' ? request.sender : request.sender,
+        content: project ? `Your request for ${project.name} was rejected` : 'Your request was rejected',
+        type: 'Update',
+        relatedId: request.receiverProject
+      });
     }
 
     await request.save();
+    await Notification.updateMany({ relatedId: request._id, user: req.user._id }, { isRead: true });
     res.json(request);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
